@@ -1,4 +1,4 @@
-# Hardware-Design-of-4-bit-Sign-Calculator-and-implementation-on-FPGAs-by-Schematic-Circuit
+# Hardware-Design-of-4-bit-Sign-Calculator-and-implementation-on-FPGAs-by-Verilog
 
 
 This project presents the hardware design and FPGA implementation of a 4-bit Sign Calculator, built using schematic-based circuit design methodology. The core idea is to determine the sign (positive or negative) of a 4-bit 2's complement input number, using digital logic gates. The design is tested and implemented on an FPGA development board using Xilinx or Intel/Altera tools.
