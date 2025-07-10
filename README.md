@@ -1,49 +1,25 @@
-# Hardware-Design-of-4-bit-Sign-Calculator-and-implementation-on-FPGAs-by-Verilog
+# Digital Sign Calculator Verification and Implementation of Verilog HDL via FPGA Simulation
 
+This project presents the design, verification, and implementation of a Digital Sign Calculator using Verilog HDL, with deployment and simulation on an FPGA platform. The module determines whether a signed binary input (in 2's complement form) is positive or negative and drives an appropriate output signal accordingly.
 
-This project presents the hardware design and FPGA implementation of a 4-bit Sign Calculator, built using schematic-based circuit design methodology. The core idea is to determine the sign (positive or negative) of a 4-bit 2's complement input number, using digital logic gates. The design is tested and implemented on an FPGA development board using Xilinx or Intel/Altera tools.
-📌 Features
+Project Overview
 
-    📐 Schematic-based Design (No HDL code)
+    📁 Language: Verilog HDL
+    🎛️ FPGA Platform: Xilinx (Spartan series)
+    🧪 Simulation Tool: ISim
+    ⚙️ Design Methodology: RTL Modeling and Testbench Verification
+    💡 Input: 4-bit 2's complement binary number
+    🚦 Output: 1 if positive, 0 if negative
 
-    🔢 Accepts a 4-bit 2's complement number as input
+🧠 Functional Description
+➕➖ Sign Detection Logic
+In 2's complement:
 
-    ➕➖ Identifies and displays the sign (positive or negative)
+    MSB = 0 → Positive
+    MSB = 1 → Negative
 
-    💡 Output: High (1) if input is positive, Low (0) if negative
-
-    🖥️ Simulated and implemented using Xilinx ISE / Quartus Prime
-
-    ⛓️ Synthesized for FPGA target (e.g., Spartan-3E / Cyclone IV)
-
-🧠 Logic Description
-
-In 2's complement representation:
-
-    MSB (A3) represents the sign bit
-
-        A3 = 0 → Positive number
-
-        A3 = 1 → Negative number
-
-Truth Table:
-A3	A2	A1	A0	Sign (Output)
-0	*	*	*	1 (Positive)
-1	*	*	*	0 (Negative)
-
-Thus, the output is simply the inverted MSB:
-
-Sign = NOT(A3)
-
-🛠️ Tools Used
-
-    Design Software: Xilinx ISE / Quartus Prime
-
-    Target Hardware: Spartan-3 / Cyclone FPGA
-
-    Simulation Tool: ModelSim / ISim
-
-    Implementation: Digital logic schematic (no Verilog/VHDL)
+So, the sign output is simply:
+assign sign = ~in[3];  // Assuming 'in' is 4-bit input\
 
 📷 Screenshots
 
