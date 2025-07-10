@@ -1,0 +1,111 @@
+//------------------------------ Sign Calculator 4-Bits -----------------------------//
+
+module Sign_Calculator(O, R, Q, A, B, S, M,Rst);
+output reg [8:0] O, R, Q;     
+input [3:0] A, B;          
+input [1:0] S, M;          // S: Sign control, M: Mode of operation
+input Rst;
+// Function to perform 2's complement
+function [8:0] Comp;
+input [3:0] in;
+begin
+Comp = ~{5'b00000, in} + 1'b1;  // Invert and add 1 (2's complement)
+end
+endfunction
+
+// Function to perform Sign Adder
+function [8:0] Sign_Adder;
+input [3:0] A, B;
+input [1:0] S;
+begin
+case(S)
+2'b00: Sign_Adder = {5'b00000, A} + {5'b00000, B};     // A + B
+2'b01: Sign_Adder = {5'b00000, A} + Comp(B);           // A + (-B)
+2'b10: Sign_Adder = Comp(A) + {5'b00000, B};           // -A + B
+2'b11: Sign_Adder = Comp(A) + Comp(B);                 // (-A) + (-B)
+endcase
+end
+endfunction
+
+// Function to perform Sign Subtractor
+function [8:0] Sign_Sub;
+input [3:0] A, B;
+input [1:0] S;
+begin
+case(S)
+2'b00: Sign_Sub = {5'b00000, A} - {5'b00000, B};      // A - B
+2'b01: Sign_Sub = {5'b00000, A} - Comp(B);            // A - (-B)
+2'b10: Sign_Sub = Comp(A) - {5'b00000, B};            // -A - B
+2'b11: Sign_Sub = Comp(A) - Comp(B);                  // (-A) - (-B)
+endcase
+end
+endfunction
+
+// Function to perform Sign Multiplier
+function [8:0] Sign_Multiplier;
+input [3:0] A, B;
+input [1:0] S;
+begin
+case(S)
+2'b00: Sign_Multiplier = {5'b00000, A} * {5'b00000, B};      // A * B
+2'b01: Sign_Multiplier = {5'b00000, A} * Comp(B);            // A * (-B)
+2'b10: Sign_Multiplier = Comp(A) * {5'b00000, B};            // -A * B
+2'b11: Sign_Multiplier = Comp(A) * Comp(B);                  // (-A) * (-B)
+endcase
+end
+endfunction
+
+// Function to perform Sign Divider
+function [17:0] Sign_Divider;
+input [3:0] A,B;      // 4-bit signed input A,B
+input [1:0] S;        // 2-bit select line for different operations
+reg signed [8:0] Q,R;
+begin
+if (B != 0) begin
+case(S)
+2'b00: begin
+Q = A / B;
+R = A % B;
+end
+
+2'b01: begin
+Q = Comp(A / B) -1'b1; 
+R = (A/B+1'b1)*B - A;
+end
+
+2'b10: begin
+Q = Comp(A / B)-1'b1; 
+R = (A/B+1'b1)*B - A;
+end
+
+2'b11: begin
+Q = A / B;
+R = A % B;
+end
+endcase
+end else begin
+Q = 9'b00000000;
+R = 9'b00000000;
+end
+Sign_Divider = {Q, R};
+end
+endfunction
+
+// Adittion, Subtraction, Multiplication, Divider Operatiom
+always @(*) begin
+if (Rst) begin
+case(M)
+2'b00: O = Sign_Adder(A, B, S);            // 00-Addition
+2'b01: O = Sign_Sub(A, B, S);              // 01-Subtraction
+2'b10: O = Sign_Multiplier(A, B, S);       // 10-Multiplication
+2'b11: begin                               // 11-Divider 
+{Q,R} = Sign_Divider(A, B, S);      
+end
+endcase
+end else begin
+O=9'b0;
+Q=9'b0;
+R=9'b0;
+end
+end
+endmodule
